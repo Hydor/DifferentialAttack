@@ -86,7 +86,7 @@ public class SPN_Enc {
 				tempSBoxResult += sboxOutput(tempXorResult[j]);				
 				if(tempSBoxResult.length()==m ) 
 				{
-					if ( i==(Round-1))
+					if ( i==(Round-1))  // The last Round do not Permutation
 					{
 						tempOutput[0]=tempSBoxResult.substring(0, 8);
 						tempOutput[1]=tempSBoxResult.substring(8, 16);
@@ -126,6 +126,7 @@ public class SPN_Enc {
 			
 			String[] tempSBoxResult= new String[size];
 			String[] tempXorResult= new String[size];
+			// The last Round do not Permutation
 			if(i!=(Round-1))tempPermResult = execPermutation(StringArrayToString(tempPermResult)).split(" ");
 			for(int j=0;j< size;j++)
 			{				
@@ -133,20 +134,9 @@ public class SPN_Enc {
 				tempXorResult[j] = xorString(keyStr[size*i+ j],tempSBoxResult[j]);
 				
 			}
-			
-			System.out.println("tempPermResult" +" : i="+ i);
-			System.out.println(tempPermResult[0]);System.out.println(tempPermResult[1]);System.out.println(tempPermResult[2]);System.out.println("");
-			
-			System.out.println("tempSBoxResult" +" : i="+ i);
-			System.out.println(tempSBoxResult[0]);System.out.println(tempSBoxResult[1]);System.out.println(tempSBoxResult[2]);System.out.println("");
-			
-			System.out.println("tempXorResult" +" : i="+ i);
-			System.out.println(tempXorResult[0]);System.out.println(tempXorResult[1]);System.out.println(tempXorResult[2]);System.out.println("");
 			tempPermResult=tempXorResult;
 		
 		}
-		
-		
 		outputStr=tempPermResult;
 	}
 	
