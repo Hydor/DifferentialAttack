@@ -8,10 +8,10 @@ public class Feistel {
 	public static String keys;
 	public static int a;
 	public static String outputStr;
+	public static String outputStrB;
 	
 	public static void main(String args[]) {
-        readFile();
-        
+        readFile();        
         
         if(a==0) {
         	encryption();
@@ -29,10 +29,10 @@ public class Feistel {
         try (FileReader reader = new FileReader(pathname);
              BufferedReader br = new BufferedReader(reader)
         ) {
-        	n = Integer.parseInt(br.readLine());      
-        	inputStr =   br.readLine();    
-        	keys = br.readLine();            	
-        	a = Integer.parseInt(br.readLine());  
+        	n = Integer.parseInt(br.readLine());    // Read size of half-block   
+        	inputStr =   br.readLine();    			//Read message
+        	keys = br.readLine();            	  // Read key
+        	a = Integer.parseInt(br.readLine());   // 0 = encryption, 1=  decryption
         	
         } catch (IOException e) {
             e.printStackTrace();
@@ -59,35 +59,53 @@ public class Feistel {
 		 catch (IOException e) {
 	            e.printStackTrace();
 	        }
-	
+		 if (a==0)
+		 {
+		 try {
+	            File writeName = new File("output2_feistel.txt"); 
+	            writeName.createNewFile(); 
+	            try (FileWriter writer = new FileWriter(writeName);
+	                 BufferedWriter out = new BufferedWriter(writer)
+	            ) {
 
-		
-	
-
-		//System.out.println(a);
+	                out.write(n+"\r\n");
+	                out.write(outputStrB+"\r\n");
+	                out.write(keys+"\r\n");
+	                out.write(a+"\r\n");
+	                out.flush(); 
+	                out.close();
+	            }
+	        } 
+		 catch (IOException e) {
+	            e.printStackTrace();
+	        }
+		 }
 
 	}
 	
 	public static void encryption() {
-		String leftPart="";
-		String rightPart="";
-		
-		leftPart=inputStr.substring(0,n);
-		rightPart=inputStr.substring(n,inputStr.length());
-		char[] keyChar=keys.toCharArray();
-		for (int i=0;i< keys.length();i++)
-		{
-			System.out.println("i:"+i);
-			System.out.println("leftPart:"+ leftPart); 
-			System.out.println("rightPart"+rightPart);
-			String tempRight = rightPart;	
-			rightPart=getNextRight(leftPart,rightPart,keyChar[i]);
-			leftPart=tempRight;
-			
+		String leftPart= inputStr.substring(0,n);
+		String rightPart=inputStr.substring(n,inputStr.length());		
 
-		}
+		// First Round: 
+		// f(X_r, K) = (X_r xor K mod (2^n)) xor K
+		String tempRight = rightPart;	
+		rightPart=getNextRight(leftPart,rightPart,keys);		
+		leftPart=tempRight;		
 		
 		outputStr= rightPart+leftPart;
+		
+		
+
+		// Second Round: 
+		// K1 = key, K2 = reversed(K), which is reverses the bit order
+		String k2= new StringBuilder(keys).reverse().toString();
+		
+		tempRight = rightPart;	
+		rightPart=getNextRight(leftPart,rightPart,k2);		
+		leftPart=tempRight;
+		
+		outputStrB= rightPart+leftPart;
 		
 	}
 	
@@ -99,17 +117,10 @@ public class Feistel {
 		rightPart=inputStr.substring(n,inputStr.length());
 		
 		
-		char[] keyChar=keys.toCharArray();
-		for (int i=keys.length()-1;i>=0;i--)
-		{
-			String tempRight = rightPart;	
+		String tempRight = rightPart;	
+		rightPart=getNextRight(leftPart,rightPart,keys);
+		leftPart=tempRight;
 		
-			rightPart=getNextRight(leftPart,rightPart,keyChar[i]);
-			leftPart=tempRight;
-			
-			
-
-		}
 		outputStr=rightPart+ leftPart;
 		
 	}
@@ -117,15 +128,14 @@ public class Feistel {
 	
 
 
-	public static String getNextRight(String oriLeft, String oriRight, char key){  	
+	public static String getNextRight(String oriLeft, String oriRight, String key){  	
 		
-		int keyInt=Integer.valueOf(Character.toString(key),2);
+		int keyInt=Integer.valueOf(key,2);
 		int leftInt=Integer.valueOf(oriLeft,2);
 		int rightInt=Integer.valueOf(oriRight,2);
 		int funcResult = (rightInt + keyInt) % (int) Math.pow(2,n) ;		
 		int resultInt=funcResult^leftInt^keyInt;
 		String out=Integer.toBinaryString(resultInt);
-		
 		while(out.length()<n)	{	   		
 			out="0"+out;	   		
 		}
