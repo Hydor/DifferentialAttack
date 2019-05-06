@@ -83,11 +83,20 @@ public class SPN_Enc {
 			for(int j=0;j< size;j++)
 			{
 				tempXorResult[j]=xorString(keyStr[i*size + j],tempOutput[j]);
-				tempSBoxResult += sboxOutput(tempXorResult[j]);
-				if(tempSBoxResult.length()==m) {tempOutput= execPermutation(tempSBoxResult).split(" ");
-				}
-				
-			}
+				tempSBoxResult += sboxOutput(tempXorResult[j]);				
+				if(tempSBoxResult.length()==m ) 
+				{
+					if ( i==(Round-1))
+					{
+						tempOutput[0]=tempSBoxResult.substring(0, 8);
+						tempOutput[1]=tempSBoxResult.substring(8, 16);
+						tempOutput[2]=tempSBoxResult.substring(16, 24);
+						}
+					else {
+						tempOutput= execPermutation(tempSBoxResult).split(" ");
+						}					
+				}				
+			}			
 		
 		}
 		for(int k=0;k< size;k++)
@@ -109,6 +118,7 @@ public class SPN_Enc {
 			if (k!=size-1) str+= " ";
 			
 		}
+		System.out.println(str);
 		String[] tempPermResult= new String[size]; 
 		tempPermResult =str.split(" ");
 		for(int i=Round-1;i>=0 ;i--)
@@ -116,11 +126,9 @@ public class SPN_Enc {
 			
 			String[] tempSBoxResult= new String[size];
 			String[] tempXorResult= new String[size];
-			tempPermResult = execPermutation(StringArrayToString(tempPermResult)).split(" ");
+			if(i!=(Round-1))tempPermResult = execPermutation(StringArrayToString(tempPermResult)).split(" ");
 			for(int j=0;j< size;j++)
-			{
-				
-					
+			{				
 				tempSBoxResult[j] = sboxOutput(tempPermResult[j]);
 				tempXorResult[j] = xorString(keyStr[size*i+ j],tempSBoxResult[j]);
 				
