@@ -133,9 +133,13 @@ public class Feistel {
 		int keyInt=Integer.valueOf(key,2);
 		int leftInt=Integer.valueOf(oriLeft,2);
 		int rightInt=Integer.valueOf(oriRight,2);
-		int funcResult = (rightInt + keyInt) % (int) Math.pow(2,n) ;		
+		int funcResult = (rightInt + keyInt) % (int) Math.pow(2,n) ;	
+		System.out.println(funcResult);
+		System.out.println(leftInt);
+		System.out.println(keyInt);
 		int resultInt=funcResult^leftInt^keyInt;
 		String out=Integer.toBinaryString(resultInt);
+		System.out.println(out);
 		while(out.length()<n)	{	   		
 			out="0"+out;	   		
 		}

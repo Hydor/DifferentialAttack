@@ -95,8 +95,19 @@ public class SPN_Enc {
 					else {
 						tempOutput= execPermutation(tempSBoxResult).split(" ");
 						}					
-				}				
-			}			
+				}	
+				
+
+			}		
+			
+				System.out.println("i : " + i );
+				System.out.println("tempXorResult");
+				System.out.println(tempXorResult[0] +tempXorResult[1] +tempXorResult[2]  );
+				System.out.println("tempSBoxResult");
+				System.out.println(tempSBoxResult);
+
+				System.out.println("tempOutput");
+				System.out.println(tempOutput[0]+tempOutput[1] +tempOutput[2]);	
 		
 		}
 		for(int k=0;k< size;k++)
