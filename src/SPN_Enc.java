@@ -1,5 +1,6 @@
 import java.io.*;
 import java.io.BufferedReader;
+import java.util.BitSet;
 
 public class SPN_Enc {
 
@@ -116,6 +117,50 @@ public class SPN_Enc {
 		}
 		outputStr=tempOutput;
 		
+	}
+	
+	
+	public  BitSet encryption(BitSet p) {
+		readFile();
+		int size=m/8;
+		String[] tempOutput=  new String[size]; 
+		tempOutput = p.toString().split(","); 		
+		
+		for(int i=0;i<Round ;i++)//Round
+		{
+			String[] tempXorResult= new String[size]; 
+			String tempSBoxResult="";
+			for(int j=0;j< size;j++)
+			{
+				tempXorResult[j]=xorString(keyStr[i*size + j],tempOutput[j]);
+				tempSBoxResult += sboxOutput(tempXorResult[j]);				
+				if(tempSBoxResult.length()==m ) 
+				{
+					if ( i==(Round-1))  // The last Round do not Permutation
+					{
+						tempOutput[0]=tempSBoxResult.substring(0, 8);
+						tempOutput[1]=tempSBoxResult.substring(8, 16);
+						tempOutput[2]=tempSBoxResult.substring(16, 24);
+						}
+					else {
+						tempOutput= execPermutation(tempSBoxResult).split(" ");
+						}					
+				}	
+				
+
+			}		
+			
+		}
+		for(int k=0;k< size;k++)
+		{
+			tempOutput[k]= xorString(keyStr[Round*size + k],tempOutput[k]);			
+		}
+		BitSet outbs= new BitSet();
+		for(int i =0; i< tempOutput.length;i++)
+		{
+			outbs.set(Integer.valueOf(tempOutput[i],2));
+		}
+		return outbs;
 	}
 	
 	public static void decryption() {
