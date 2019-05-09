@@ -8,65 +8,7 @@ import java.util.Random;
 
 public class DifferentialAttack {
 
-  /**
-   * Generate random Plain/Cipher pairs via the SPN cipher with the given
-   * round keys
-   * 
-   * @param pairs
-   *          Number of pairs to generate
-   * @param roundKeys
-   *          Round keys to use for the SPN cipher
-   * @return List of plain/cipher sets (each set is 16 bits long)
-   */
-  public List<BitSet[]> generateChosenPairs(int pairs, BitSet[] roundKeys) {
-    Random r = new Random();
-    SPN_Enc spn = new SPN_Enc();
-    List<BitSet[]> sets = new ArrayList<BitSet[]>();
-    for (int i = 0; i < pairs; i++) {
-      // choose a random plaintext-ciphertext pair
-      BitSet p1 = CommonTool.IntToBitSet(r.nextInt(65536), 16);
-      BitSet c1 = spn.encryption(p1);
 
-      // choose another pair such that dP = [0000 1011 0000 0000] is satisfied
-      BitSet p2 = CommonTool.copyBitSet(p1, 16);
-      p2.xor(CommonTool.IntToBitSet(2816, 16));
-      BitSet c2 = spn.encryption(p2);
-
-      // discard the 'wrong pairs'
-      // 'right pairs' should have dC = [0000 **** 0000 ****]
-      BitSet dC = CommonTool.copyBitSet(c1, 16);
-      dC.xor(c2);
-
-      if ((CommonTool.BitSetToInteger(dC.get(0, 4), 4) == 0)
-          && (CommonTool.BitSetToInteger(dC.get(8, 12), 4) == 0)) {
-        sets.add(new BitSet[] { c1, c2 });
-      }
-    }
-    return sets;
-  }
-
-  /**
-   * Backtrack across one s-box with a partial ciphertext and partial subkey
-   * guess
-   * 
-   * @param partialc
-   *          4 bit partial of the ciphertext
-   * @param partialk
-   *          4 bit partial of the subkey
-   * @return
-   */
-  public BitSet backtrackPartialSubkeyGuess(BitSet partialc, BitSet partialk) {
-    partialc = CommonTool.copyBitSet(partialc, 4);
-    partialc.xor(partialk);
-    
-    BitSet U = sBox(partialc);
-    return U;
-  }
-
-  /**
-   * Mount the differential cryptanalysis attack on the SPN cipher to recover 8
-   * bits of the final round key
-   */
   public static void main(String[] args) {
     System.out.println("Running differential cryptanalysis on SPN....");
     // the expression to compute:
@@ -83,7 +25,7 @@ public class DifferentialAttack {
     int pairct = 10000;
     
     // print out the real key bits and some info
-    System.out.println("4-Round SPN Differential Cryptanalysis.");
+    System.out.println("6-Round SPN Differential Cryptanalysis.");
     System.out.println("Using " + pairct + " pairs.");
     BitSet realPskA = roundKeys[4].get(4, 8);
     BitSet realPskB = roundKeys[4].get(12, 16);
@@ -203,6 +145,62 @@ public class DifferentialAttack {
         + " with probability " + maxprob);
   }
   
+  
+
+  /**
+   * Generate random Plain/Cipher pairs via the SPN cipher with the given
+   * round keys
+   * 
+   * @param pairs
+   *          Number of pairs to generate
+   * @param roundKeys
+   *          Round keys to use for the SPN cipher
+   * @return List of plain/cipher sets (each set is 16 bits long)
+   */
+  public List<BitSet[]> generateChosenPairs(int pairs, BitSet[] roundKeys) {
+    Random r = new Random();
+    SPN_Enc spn = new SPN_Enc();
+    List<BitSet[]> sets = new ArrayList<BitSet[]>();
+    for (int i = 0; i < pairs; i++) {
+      // choose a random plaintext-ciphertext pair
+      BitSet p1 = CommonTool.IntToBitSet(r.nextInt(65536), 16);
+      BitSet c1 = spn.encryption(p1);
+
+      // choose another pair such that dP = [0000 1011 0000 0000] is satisfied
+      BitSet p2 = CommonTool.copyBitSet(p1, 16);
+      p2.xor(CommonTool.IntToBitSet(2816, 16));
+      BitSet c2 = spn.encryption(p2);
+
+      // discard the 'wrong pairs'
+      // 'right pairs' should have dC = [0000 **** 0000 ****]
+      BitSet dC = CommonTool.copyBitSet(c1, 16);
+      dC.xor(c2);
+
+      if ((CommonTool.BitSetToInteger(dC.get(0, 4), 4) == 0)
+          && (CommonTool.BitSetToInteger(dC.get(8, 12), 4) == 0)) {
+        sets.add(new BitSet[] { c1, c2 });
+      }
+    }
+    return sets;
+  }
+
+  /**
+   * Backtrack across one s-box with a partial ciphertext and partial subkey
+   * guess
+   * 
+   * @param partialc
+   *          4 bit partial of the ciphertext
+   * @param partialk
+   *          4 bit partial of the subkey
+   * @return
+   */
+  public BitSet backtrackPartialSubkeyGuess(BitSet partialc, BitSet partialk) {
+    partialc = CommonTool.copyBitSet(partialc, 4);
+    partialc.xor(partialk);
+    
+    BitSet U = sBox(partialc);
+    return U;
+  }
   
   public  BitSet sBox (BitSet index){
 		 

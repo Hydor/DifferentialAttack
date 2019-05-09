@@ -14,10 +14,23 @@ public class Attack {
 	
 	public static void main(String args[]) {
 		readFile();
-		 
+		PrintDifferenceDistributionTable();
 		
-		// GET Differential Distribution Table
-		//
+		
+
+		
+		
+		
+		//Integer.toBinaryString(i1);
+		
+		
+		//SPN_Enc.encryption();
+	}
+	
+	
+	// GET Differential Distribution Table
+	public static void PrintDifferenceDistributionTable()
+	{
 		// dX = {0000, ..., 1111}
         //  X = {0000, ..., 1111}
 		// X' = X xor dX
@@ -25,33 +38,29 @@ public class Attack {
 		// dY = Y xor Y' 
 		// Traversing the value of the remaining dX = {0000, ..., 1111}
 		
-		int[][] differenceDistributionTable = new int[16][16];     //Store [dx][dY count]
+		int[][] differenceDistributionTable = new int[16][16];     //Store as [dx][dY count]
 		
 		for (int dX=0;dX<16 ; dX++)
 		{
-			System.out.println(dX);
-			System.out.println("dx ------------------------------ ");
 			for (int X=0;X<16 ; X++)
 			{
 				int dY = Integer.valueOf(sboxOutput4(dX ^ X ),2)^Integer.valueOf(sboxOutput4(X),2);
-				differenceDistributionTable[dX][dY]++;
-				System.out.println(dY);
-				 
+				differenceDistributionTable[dX][dY]++;		
 			}
 		}
 		
+		System.out.println("  Difference Distribution Table: \n");
+		System.out.println("\t   0  1  2  3  4  5  6  7  8  9 10 11 12 13 14 15");
+		System.out.println("\t   -----------------------------------------------");
 		for (int dX=0;dX<16 ; dX++)
 		{
+			System.out.print("dX="+dX + "\t");
 			for (int Yc=0;Yc<16 ; Yc++)		
 			{
-				System.out.println(differenceDistributionTable[dX][Yc]);
+				System.out.print( "  " + differenceDistributionTable[dX][Yc]);
 			}
-			}
-		
-		//Integer.toBinaryString(i1);
-		
-		
-		//SPN_Enc.encryption();
+			System.out.println();
+		}
 	}
 	
 	public static String sboxOutput4 (String inputStr){
