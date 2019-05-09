@@ -99,16 +99,15 @@ public class SPN_Enc {
 				}	
 				
 
-			}		
-			
-				System.out.println("i : " + i );
-				System.out.println("tempXorResult");
-				System.out.println(tempXorResult[0] +tempXorResult[1] +tempXorResult[2]  );
-				System.out.println("tempSBoxResult");
-				System.out.println(tempSBoxResult);
-
-				System.out.println("tempOutput");
-				System.out.println(tempOutput[0]+tempOutput[1] +tempOutput[2]);	
+			}					
+//				System.out.println("i : " + i );
+//				System.out.println("tempXorResult");
+//				System.out.println(tempXorResult[0] +tempXorResult[1] +tempXorResult[2]  );
+//				System.out.println("tempSBoxResult");
+//				System.out.println(tempSBoxResult);
+//
+//				System.out.println("tempOutput");
+//				System.out.println(tempOutput[0]+tempOutput[1] +tempOutput[2]);	
 		
 		}
 		for(int k=0;k< size;k++)
@@ -120,47 +119,11 @@ public class SPN_Enc {
 	}
 	
 	
-	public  BitSet encryption(BitSet p) {
-		readFile();
-		int size=m/8;
-		String[] tempOutput=  new String[size]; 
-		tempOutput = p.toString().split(","); 		
+	public  String encryption(String p) {
+		readStaticFile(p);
+		encryption();
+		return outputStr[0]+ " " + outputStr[1] + " " + outputStr[2];
 		
-		for(int i=0;i<Round ;i++)//Round
-		{
-			String[] tempXorResult= new String[size]; 
-			String tempSBoxResult="";
-			for(int j=0;j< size;j++)
-			{
-				tempXorResult[j]=xorString(keyStr[i*size + j],tempOutput[j]);
-				tempSBoxResult += sboxOutput(tempXorResult[j]);				
-				if(tempSBoxResult.length()==m ) 
-				{
-					if ( i==(Round-1))  // The last Round do not Permutation
-					{
-						tempOutput[0]=tempSBoxResult.substring(0, 8);
-						tempOutput[1]=tempSBoxResult.substring(8, 16);
-						tempOutput[2]=tempSBoxResult.substring(16, 24);
-						}
-					else {
-						tempOutput= execPermutation(tempSBoxResult).split(" ");
-						}					
-				}	
-				
-
-			}		
-			
-		}
-		for(int k=0;k< size;k++)
-		{
-			tempOutput[k]= xorString(keyStr[Round*size + k],tempOutput[k]);			
-		}
-		BitSet outbs= new BitSet();
-		for(int i =0; i< tempOutput.length;i++)
-		{
-			outbs.set(Integer.valueOf(tempOutput[i],2));
-		}
-		return outbs;
 	}
 	
 	public static void decryption() {
@@ -196,7 +159,15 @@ public class SPN_Enc {
 		outputStr=tempPermResult;
 	}
 	
-	
+	public static void readStaticFile(String p) {
+         
+        	keyStr ="11011010 00110110 01111011 00010101 10001110 11111011 00100110 01001011 10010110 11000101 11111010 00110101 10111101 10010111 00111100 00101110 10000001 01011101 00101101 11000011 10110111".split(" ");    
+        	sBoxStr =  "00001110 00001111 00000000 00000001 00000010 00000011 00000100 00000101 00000110 00000111 00001000 00001001 00001010 00001011 00001100 00001101".split(" ");    
+        	permStr = "00001101 00000111 00001000 00010011 00010100 00001011 00000010 00000011 00010001 00010101 00000110 00001110 00000001 00001100 00011000 00010111 00001001 00010110 00000100 00000101 00001010 00010010 00010000 00001111".split(" ");            	
+        	m = 24;
+        	inputStr = p.split(" ");    
+        	a = 0;          
+    }
 
 
 	public static String xorString(String input, String key){  		

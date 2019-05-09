@@ -1,4 +1,8 @@
 import java.io.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
+import java.util.Random;
 
 public class Attack {
 
@@ -17,9 +21,8 @@ public class Attack {
 		PrintDifferenceDistributionTable();
 		
 		
-
 		
-		
+		generatePairs(5);
 		
 		//Integer.toBinaryString(i1);
 		
@@ -63,6 +66,41 @@ public class Attack {
 		}
 	}
 	
+	
+	 public static void generatePairs(int pairs) {
+		    Random r = new Random();
+		    SPN_Enc spn = new SPN_Enc();
+
+		    for (int i = 0; i < pairs; i++) {
+		      // generate a random plaintext-ciphertext pair 
+		      int intp1 = r.nextInt(16777215);
+		      String p1= Integer.toBinaryString(intp1);		      
+		      String c1 = spn.encryption(addSpaceEvery8(p1)); 
+		      System.out.println(p1);
+		      System.out.println(c1);
+				
+		    }
+		      
+//		      // choose another pair such that dP = [0000 1011 0000 0000] is satisfied
+//		      BitSet p2 = Util.copyBitSet(p1, 24);
+//		      p2.xor(Util.toBitSet(393216, 24)); /////??????????????????????????????????????????????????????
+//		      BitSet c2 = spn.SpnEncBlock(p2, roundKeys);
+//
+//		      // discard the 'wrong pairs'
+//		      // 'right pairs' should have dC = [0000 **** 0000 ****]
+//		      BitSet dC = Util.copyBitSet(c1, 24);
+//		      dC.xor(c2);
+//
+//		      if ((Util.toInteger(dC.get(0, 4), 4) == 0)
+//		          && (Util.toInteger(dC.get(8, 12), 4) == 0)) {
+//		        sets.add(new BitSet[] { c1, c2 });
+//		      }
+//		    }
+//		    return sets;
+		  }
+
+	
+	
 	public static String sboxOutput4 (String inputStr){
 			 
 		String[] sboxSub=new String[16];
@@ -103,5 +141,12 @@ public class Attack {
             e.printStackTrace();
         }
     }
+	
+	public static String addSpaceEvery8(String s)
+	{
+		    String regex = "(.{8})";
+		    s = s.replaceAll(regex, "$1 ");
+		    return s;		
+	}
 	
 }
