@@ -111,15 +111,15 @@ public class SPN_Enc {
 //				System.out.println(tempOutput[0]+tempOutput[1] +tempOutput[2]);	
 		
 			}
-		}
-		catch (Exception e) 
-		{}
+		
 		for(int k=0;k< size;k++)
 		{
 			tempOutput[k]= CommonTool.xorString(keyStr[Round*size + k],tempOutput[k]);			
 		}
 		outputStr=tempOutput;
-		
+		}
+		catch (Exception e) 
+		{}
 	}
 	
 	

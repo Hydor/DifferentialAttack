@@ -41,9 +41,22 @@ public final class CommonTool {
 	  
 	  
 	  
-	  public static String intToBinaryString(int n)
+	  public static String intToBinaryString(int n, int l )
 	  {
-		return Integer.toBinaryString(Integer.valueOf(n));
+		String str = Integer.toBinaryString(Integer.valueOf(n));
+		while (str.length()!=l)
+		{str="0"+str;}
+		return str;
 	  }
+	  
+	  
+		
+		public static String addSpaceEvery8(String s)
+		{
+			    String regex = "(.{8})";
+			    s = s.replaceAll(regex, "$1 ");
+			    return s;		
+		}
+		
 	  
 	}
