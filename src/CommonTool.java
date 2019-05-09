@@ -1,103 +1,49 @@
-    
-import java.util.BitSet;
 
 public final class CommonTool {
 	  private CommonTool() {
 	  }
-
+	  
+	  /**
+	   *  Xor two Binary String  
+	   * 
+	   * @param str1
+	   *          Binary String without space
+	   * @param str2
+	   *          Binary String without space
+	   */
+	  public static String xorString(String str1, String str2){  	
+		  if (str1.length()!=str2.length())  new IllegalArgumentException("There should be same length to xor");
+		   	String str= Integer.toBinaryString(Integer.valueOf(str1,2)^Integer.valueOf(str2,2));	   	
+		   	while(str.length()!=str1.length())	{	   		
+		   			str="0"+str;	   		
+		    }
+	   		return str;
+	   }
 	  
 	  
-	  public static int BitSetToInteger(BitSet set, int n) {
-	    int acc = 0;
-	    for (int i = 0; i < n; i++) {
-	      acc += ((set.get(n - i - 1)) ? 1 : 0) << i;
-	    }
-	    return acc;
-	  }
-
-	  //Convert integer to bit set with desired value 	   
-	  public static BitSet IntToBitSet(int value, int n) {
-	    int idx = n - 1;
-	    BitSet result = new BitSet();
-	    while (value > 0) {
-	      result.set(idx--, value % 2 == 1);
-	      value /= 2;
-	    }
-	    return result;
-	  }
-
- 
-	  public static boolean IsEqualsBitSet(BitSet a, BitSet b, int n) {
-	    for (int i = 0; i < n; i++) {
-	      boolean ca = a.get(i);
-	      boolean cb = b.get(i);
-	      if (ca != cb)
-	        return false;
-	    }
-	    return true;
-	  }
-
-	  
-	  public static BitSet copyBitSet(BitSet set, int n) {
-	    BitSet newset = new BitSet();
-	    for (int i = 0; i < n; i++) {
-	      newset.set(i, set.get(i));
-	    }
-	    return newset;
-
-	  }
-	  
-	//Increment the numeric value represented by this bit set	   
-	  public static BitSet increment(BitSet set, int n) {
-	    boolean carry = true;
-	    int place = n - 1;
-	    while (carry && place >= 0) {
-	      carry = set.get(place);
-	      set.set(place, !set.get(place));
-	      place--;
-	    }
-	    return set;
-	  }
-
-	  //Get the direct sum (XOR) of all the bits	   
-	  public static boolean DirectSum(BitSet set, int n) {
-	    boolean acc = false;
-	    for (int i = 0; i < n; i++) {
-	      acc ^= set.get(i);
-	    }
-	    return acc;
-	  }
-	  
-
-	  //Concatenate bit sets with specified numbers of bits to bit set with number	   
-	  public static BitSet concatenate(BitSet a, int totalBitsA, BitSet b,
-	      int totalBitsB) {
-	    for (int i = 0; i < totalBitsB; i++) {
-	      a.set(totalBitsA + i, b.get(i));
-	    }
-	    return a;
-	  }
-
-	  //Concatenate an array of bit sets of equal length	   
-	  public static BitSet concatenate(BitSet[] sets, int totalBitsEach) {
-	    BitSet result = new BitSet(sets.length * totalBitsEach);
-	    for (int i = 0; i < sets.length; i++) {
-	      for (int j = 0; j < totalBitsEach; j++) {
-	        result.set((i * totalBitsEach) + j, sets[i].get(j));
-	      }
-	    }
-	    return result;
-	  }
+	  /**
+	   *  Xor two int 
+	   * 
+	   * @param i1
+	   *          number 1
+	   * @param i2
+	   *          number 2
+	   * @param l
+	   *          return String length
+	   */
+	  public static String xorString(int i1, int i2, int l){  	
+		   	String str= Integer.toBinaryString(i1^i2);	   	
+		   	while(str.length()!=l)	{	   		
+		   			str="0"+str;	   		
+		    }
+	   		return str;
+	   }
 	  
 	  
-	  public static void printBitSet(BitSet set, int n) {
-	    int ptr = 0;
-	    while (ptr < n) {
-	      int val = CommonTool.BitSetToInteger(set.get(ptr, ptr + 4), 4);
-	      System.out.print(Integer.toHexString(val).toUpperCase());
-
-	      ptr += 4;
-	    }
-	    System.out.println();
+	  
+	  public static String intToBinaryString(int n)
+	  {
+		return Integer.toBinaryString(Integer.valueOf(n));
 	  }
+	  
 	}

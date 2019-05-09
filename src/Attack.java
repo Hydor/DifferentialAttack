@@ -18,12 +18,16 @@ public class Attack {
 	
 	public static void main(String args[]) {
 		readFile();
-		PrintDifferenceDistributionTable();
+		
+		// PrintDifferenceDistributionTable();
+	 
+
+		 
+	 
+		String[][] rightPairs = generatePairs(100);
 		
 		
-		
-		generatePairs(5);
-		
+		System.out.println(rightPairs[0][0] + "-" + rightPairs[0][1]);
 		//Integer.toBinaryString(i1);
 		
 		
@@ -67,7 +71,8 @@ public class Attack {
 	}
 	
 	
-	 public static void generatePairs(int pairs) {
+	 public static String[][] generatePairs(int pairs) {
+		 	String[][] rightPairs = new String[pairs][2];
 		    Random r = new Random();
 		    SPN_Enc spn = new SPN_Enc();
 
@@ -76,30 +81,28 @@ public class Attack {
 		      int intp1 = r.nextInt(16777215);
 		      String p1= Integer.toBinaryString(intp1);		      
 		      String c1 = spn.encryption(addSpaceEvery8(p1)); 
-		      System.out.println(p1);
-		      System.out.println(c1);
-				
+		     
+		      String  dP = "000001100000000000000000";		      
+		      String p2 = CommonTool.xorString(p1, dP);			     
+		      String c2 = spn.encryption(addSpaceEvery8(p2)); 
+						    
+		      // discard the wrong pairs
+		      String dC = CommonTool.xorString(c1.replace(" ", ""), c2.replace(" ", ""));
+		      int k=0;	
+		      System.out.println(Integer.valueOf(dC.substring(12,24),2) ==0 );
+		      if( (dC.substring(4,8) == "0000") &&(Integer.valueOf(dC.substring(12,24),2) ==0 )){
+		    	  	rightPairs[k][0] = c1;
+		    	  	rightPairs[k][1] = c2; 
+		    	  	k++;System.out.println(dC);
+		    	  }		     
 		    }
-		      
-//		      // choose another pair such that dP = [0000 1011 0000 0000] is satisfied
-//		      BitSet p2 = Util.copyBitSet(p1, 24);
-//		      p2.xor(Util.toBitSet(393216, 24)); /////??????????????????????????????????????????????????????
-//		      BitSet c2 = spn.SpnEncBlock(p2, roundKeys);
-//
-//		      // discard the 'wrong pairs'
-//		      // 'right pairs' should have dC = [0000 **** 0000 ****]
-//		      BitSet dC = Util.copyBitSet(c1, 24);
-//		      dC.xor(c2);
-//
-//		      if ((Util.toInteger(dC.get(0, 4), 4) == 0)
-//		          && (Util.toInteger(dC.get(8, 12), 4) == 0)) {
-//		        sets.add(new BitSet[] { c1, c2 });
-//		      }
-//		    }
-//		    return sets;
+		    return rightPairs;
 		  }
 
-	
+	 // is dC satisfied [**** 0000 **** 0000 0000 0000] format
+	 public static boolean isRightPairs(String dc)	 {
+		 return  (dc.substring(4,8) == "0000") && (dc.substring(12,24) =="000000000000");
+	 }
 	
 	public static String sboxOutput4 (String inputStr){
 			 

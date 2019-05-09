@@ -73,33 +73,34 @@ public class SPN_Enc {
 	}
 	
 	public static void encryption() {
-		int size=m/8;
+		int size=3;
 		String[] tempOutput=  new String[size]; 
 		tempOutput = inputStr; 		
-		
-		for(int i=0;i<Round ;i++)//Round
+		try
 		{
-			String[] tempXorResult= new String[size]; 
-			String tempSBoxResult="";
-			for(int j=0;j< size;j++)
+		
+			for(int i=0;i<Round ;i++)//Round
 			{
-				tempXorResult[j]=xorString(keyStr[i*size + j],tempOutput[j]);
-				tempSBoxResult += sboxOutput(tempXorResult[j]);				
-				if(tempSBoxResult.length()==m ) 
+				String[] tempXorResult= new String[size]; 
+				String tempSBoxResult="";
+				for(int j=0;j< size;j++)
 				{
-					if ( i==(Round-1))  // The last Round do not Permutation
+					tempXorResult[j]=CommonTool.xorString(keyStr[i*size + j],tempOutput[j]);
+					tempSBoxResult += sboxOutput(tempXorResult[j]);				
+					if(tempSBoxResult.length()==m ) 
 					{
-						tempOutput[0]=tempSBoxResult.substring(0, 8);
-						tempOutput[1]=tempSBoxResult.substring(8, 16);
-						tempOutput[2]=tempSBoxResult.substring(16, 24);
+						if ( i==(Round-1))  // The last Round do not Permutation
+						{
+							tempOutput[0]=tempSBoxResult.substring(0, 8);
+							tempOutput[1]=tempSBoxResult.substring(8, 16);
+							tempOutput[2]=tempSBoxResult.substring(16, 24);
 						}
-					else {
-						tempOutput= execPermutation(tempSBoxResult).split(" ");
+						else {
+							tempOutput= execPermutation(tempSBoxResult).split(" ");
 						}					
 				}	
-				
-
-			}					
+			}		
+		
 //				System.out.println("i : " + i );
 //				System.out.println("tempXorResult");
 //				System.out.println(tempXorResult[0] +tempXorResult[1] +tempXorResult[2]  );
@@ -109,10 +110,13 @@ public class SPN_Enc {
 //				System.out.println("tempOutput");
 //				System.out.println(tempOutput[0]+tempOutput[1] +tempOutput[2]);	
 		
+			}
 		}
+		catch (Exception e) 
+		{}
 		for(int k=0;k< size;k++)
 		{
-			tempOutput[k]= xorString(keyStr[Round*size + k],tempOutput[k]);			
+			tempOutput[k]= CommonTool.xorString(keyStr[Round*size + k],tempOutput[k]);			
 		}
 		outputStr=tempOutput;
 		
@@ -132,7 +136,7 @@ public class SPN_Enc {
 		String str="";
 		for(int k=0;k< size;k++)
 		{
-			tempOutput[k]= xorString(keyStr[Round*size + k],inputStr[k]);	
+			tempOutput[k]= CommonTool.xorString(keyStr[Round*size + k],inputStr[k]);	
 			str+=	tempOutput[k]; 
 			if (k!=size-1) str+= " ";
 			
@@ -150,7 +154,7 @@ public class SPN_Enc {
 			for(int j=0;j< size;j++)
 			{				
 				tempSBoxResult[j] = sboxOutput(tempPermResult[j]);
-				tempXorResult[j] = xorString(keyStr[size*i+ j],tempSBoxResult[j]);
+				tempXorResult[j] = CommonTool.xorString(keyStr[size*i+ j],tempSBoxResult[j]);
 				
 			}
 			tempPermResult=tempXorResult;
@@ -170,13 +174,7 @@ public class SPN_Enc {
     }
 
 
-	public static String xorString(String input, String key){  		
-	   	String str= Integer.toBinaryString(Integer.valueOf(input,2)^Integer.valueOf(key,2));	   	
-	   	while(str.length()!=8)	{	   		
-	   			str="0"+str;	   		
-	    }
-   		return str;
-   }
+	
 	
 	
 	public static String sboxOutput (String inputStr){
